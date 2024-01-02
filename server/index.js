@@ -1,7 +1,9 @@
 // import required packages
 require('dotenv').config();
+
 const express = require("express");
 const cors = require('cors');
+const mongoose = require('mongoose')
 
 // initiate route
 const workoutRoutes = require('./routes/workout');
@@ -26,7 +28,15 @@ app.use((req, res, next) => {
 
 app.use('/api/workouts', workoutRoutes);
 
-// listen for requests
-app.listen(process.env.PORT, () => {
-  console.log('server running.', process.env.PORT);
-});
+// connect to db
+mongoose.connect(process.env.MONGO_URL)
+  .then(() => {
+    // listen for requests
+    app.listen(process.env.PORT, () => {
+      console.log('connection to db & server running.', process.env.PORT);
+    });
+  })
+  .catch((error) => {
+    console.log(error);
+  })
+
